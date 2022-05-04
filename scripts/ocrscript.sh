@@ -1,4 +1,5 @@
 #!/bin/bash
+# Script by ML
 # copy this script, edit and run it in the directory where you keep image files that you want to ocr
 # requires tesseract-ocr and imagemagick (for image file conversions)
 
