@@ -15,8 +15,5 @@ do
 	OUTPUT_BASENAME=${i%.*}
 	# %04d ==> "0001.jpg" etc
 	convert -density $DENSITY $INPUT_FILE -quality $QUALITY ${OUTPUT_BASENAME}_%04d.$IMG_FORMAT
-
-	# ...again, comment/uncomment depending on pdf or not
-	#rm temp.tif
 done
 set +x
