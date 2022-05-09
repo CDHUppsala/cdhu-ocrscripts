@@ -1,5 +1,6 @@
 #!/bin/bash
 # copy this script, edit and run it in the directory where you keep pdf files to convert to images
+# requires imagemagick
 
 # turns on verbose to get feedback:
 set -x
