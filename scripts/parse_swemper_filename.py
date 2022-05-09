@@ -6,6 +6,7 @@ import sys
 import os
 import hashlib
 
+
 DEBUG = False
 
 def log(s):
@@ -32,32 +33,42 @@ if __name__ == "__main__":
     "FullPeriodicalName":"",
     "PeriodicalVolIdx":"",
     "PeriodicalNrIdx":"",
-    "YearPublished": volume_fields[1],
-    "":""
+    "YearPublished": volume_fields[1]
     }
     log(swemper_data)
+
+    #rebuild basefilename for md5 calc
+    basefilename = volume_fields[0]+"_"+volume_fields[1]
+    
     # get volume number if present
     for field in volume_fields:
         if "vol" in field:
             vol = field[3:] # slice to get number
             log(vol)
             swemper_data["PeriodicalVolIdx"] = vol
-            #thisdict["year"] = 2018
+            basefilename = basefilename+"_"+field
     # get number if present
     for field in volume_fields:
         if "nr" in field:
             nr = field[2:] # slice to get number
             log(nr)
             swemper_data["PeriodicalNrIdx"] = nr
+            basefilename = basefilename+"_"+field
 
     log(swemper_data)
     log(swemper_file)
-    #calc md5 from filename.ext and use as unique swemper-vol-id
-    md5 = hashlib.md5(swemper_file.encode('utf-8')).hexdigest()
+    #calc md5 from filename.pdf and use as unique swemper-vol-id
+    log(basefilename)
+    md5 = hashlib.md5(basefilename.encode('utf-8')).hexdigest()
 
+    # Format and print YAML
+    #
+    yaml_file=basefilename+".yaml"
+    log(yaml_file)
     yaml_data = f"""\
 %YAML 1.2
 ---
+Swemper-yaml-filename: {yaml_file}
 Swemper-volume-descriptor:
   SwemperSeriesID: &ssid {swemper_data["SwemperSeriesID"]}
   FullPeriodicalName: !!str {swemper_data["FullPeriodicalName"]}
@@ -70,8 +81,6 @@ Swemper-volume-descriptor:
     - *vol
     - *nr
   Swemper-vol-id: {md5}
+...
 """
 print(yaml_data)
-
-    # Convert to YAML
-    #
