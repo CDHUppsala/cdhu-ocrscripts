@@ -1,13 +1,13 @@
 # Utility scripts for scanning post-processing/OCR/Swemper projects at CDHU
 
 ## burstpdf.sh
-Utility to burst pdfs into single page image files using ImagMagick convert.
+Utility to burst pdfs into single page image files using ImageMagick convert.
 
 ## extracttext.sh
 Utility to extract previously ocr:d text from pdfs and output it as textfiles.
 
 ## dflow2filename_swemper.py
-Script takes dFlow ID and metdata delivered through library scanning process (Gothenburg/Alvin) and outputs filename according to Swemper-specification/scheme to stdout. This python code is wrapped by rename_all_pdfs_swemper.sh.
+Script takes dFlow ID and metadata delivered through library scanning process (Gothenburg/Alvin) and outputs filename according to Swemper-specification/scheme to stdout. This python code is wrapped by rename_all_pdfs_swemper.sh.
 
 ## rename_all_pdfs_swemper.sh
 Script wraps and runs dflow2filename_swemper.py to (recursively/zsh) rename all pdfs in a directory structure ackording to Swemper-specification/scheme.
