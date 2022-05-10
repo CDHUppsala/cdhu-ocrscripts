@@ -27,5 +27,33 @@ Script to apply tesseract ocr to pdfs or images in a directory structure (recurs
 ## Swemper filename scheme
 //TODO convention and example
 
+
 ## Swemper YAML metadata physical volume descriptor
 //TODO convention and example
+
+Filename example 1: 1952/Diabetes_1952_vol002_nr001.pdf
+Filename example 2: 1952/Diabetes_1952_vol002_nr001_0031.jpg
+
+```shell
+Diabetes_1949-1990$ ./parse_swemper_filename.py 1952/Diabetes_1952_vol002_nr001.pdf
+```
+
+```yaml
+%YAML 1.2
+---
+Swemper-yaml-filename: Diabetes_1952_vol002_nr001.yaml
+Swemper-volume-descriptor:
+  SwemperSeriesID: &ssid Diabetes
+  FullPeriodicalName: !!str 
+  PeriodicalVolIdx: &vol !!str 002
+  PeriodicalNrIdx: &nr !!str 001
+  YearPublished: &yr 1952
+  BaseFilename: 
+    - *ssid
+    - *yr
+    - *vol
+    - *nr
+  Swemper-vol-id: 4e1eca51f714326501b6452b7a81e54a
+...
+```
+
