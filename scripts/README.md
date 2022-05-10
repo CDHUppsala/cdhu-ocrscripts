@@ -1,9 +1,9 @@
 # Utility scripts for scanning post-processing/OCR/Swemper projects at CDHU
 
-## burstpdf.sh
+### burstpdf.sh
 Utility to burst pdfs into single page image files using ImageMagick convert.
 
-## extracttext.sh
+### extracttext.sh
 Utility to extract previously ocr:d text from pdfs and output it as textfiles.
 
 ## dflow2filename_swemper.py
