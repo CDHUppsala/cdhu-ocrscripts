@@ -24,15 +24,23 @@ Script reads Swemper filenames in a directory, extracts publication year (with a
 ### ocrscript.sh
 Script to apply tesseract ocr to pdfs or images in a directory structure (recursively/zsh).
 
-## Swemper filename scheme
+## Swemper filename scheme and directory structure
 //TODO convention and example
 
+ Filename example 1: 1952/Diabetes_1952_vol002_nr001.pdf
+ 
+ Filename example 2: 1952/Diabetes_1952_vol002_nr001_0031.jpg
+ 
+ Naming convention is flexible...
+ 
+     This is ok: 1918/Lakartidningen_1918_0112.jpg
+ 
+     Also ok: Status_1955_vol015_nr12CJulen1955medglimtar.pdf
+ 
+     Also ok: Status_1955_vol015_nr12CJulen1955medglimtar_0048.jpg
 
 ## Swemper YAML metadata physical volume descriptor
 //TODO convention and example
-
-Filename example 1: 1952/Diabetes_1952_vol002_nr001.pdf
-Filename example 2: 1952/Diabetes_1952_vol002_nr001_0031.jpg
 
 ```shell
 Diabetes_1949-1990$ ./parse_swemper_filename.py 1952/Diabetes_1952_vol002_nr001.pdf
