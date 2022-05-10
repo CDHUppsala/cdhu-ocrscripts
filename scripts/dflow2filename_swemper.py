@@ -5,6 +5,14 @@
 # Script returns "Swemper-formatted" filename, like this example:
 # Diabetes_1953_vol003_nr006.pdf
 # Prior to use: convert dflow xslsx to csv with ssconv (in gnumeric package). Xslsx file is delivered by Library scanning procedure.
+#
+# CSV-file is formatted like this:
+# Libris-ID,Titel,Årgång,Nr,År,dFlow-ID,Datum,Operatör,Kommentar
+# 8262498,Diabetes,1,1,1949,121986,,,
+# 8262498,Diabetes,1,2,1949,121987,,,
+# ...
+#
+
 import sys
 import os
 import csv
