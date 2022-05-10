@@ -23,3 +23,9 @@ Script reads Swemper filenames in a directory, extracts publication year (with a
 
 ### ocrscript.sh
 Script to apply tesseract ocr to pdfs or images in a directory structure (recursively/zsh).
+
+## Swemper filename scheme
+//TODO convention and example
+
+## Swemper YAML metadata physical volume descriptor
+//TODO convention and example
