@@ -13,7 +13,7 @@ CDHU="\
 "
 
 # turn on verbose to get feedback:
-set -x
+#set -x
 IMG_FORMAT=jpg
 OCR_LANG=swe
 DRY_ECHO=echo
