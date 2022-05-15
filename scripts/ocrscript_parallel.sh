@@ -18,7 +18,8 @@ IMG_FORMAT=jpg
 OCR_LANG=swe
 DRY_ECHO=echo
 CAFFEINATE=""
-JOBS=6 #default to 6 threads/jobs, good for M1. Use option -j <jobs> to increase.
+JOBS=6 #default to 6 threads/jobs, good for M1. Use option -j <jobs> to increase. JOBS=6 #default to 6 threads/jobs, good for M1. Use option -j <jobs> to increase.
+export OMP_THREAD_LIMIT=1 #run single thread per job,  https://github.com/tesseract-ocr/tesseract/issues/3109
 
 echo $CDHU
 # Check if production run:
@@ -27,17 +28,17 @@ echo $CDHU
 [[ "$(uname)" == "Darwin" ]] && CAFFEINATE=caffeinate ; echo "On Mac OS, will run with caffeinate to avoid sleep"
 
 while getopts ":pj:" option; do
-   case $option in
-      p) # set production run by clearing DRY_ECHO
-         DRY_ECHO="";;
-	  j) JOBS=${OPTARG} #echo "j is ${OPTARG}";;
-   esac
+	case $option in
+		p) # set production run by clearing DRY_ECHO
+        	DRY_ECHO="";;
+		j) JOBS=${OPTARG} #echo "j is ${OPTARG}";;
+	esac
 done
 
 find . -type f -name "*.jpg" \
 	| sed "s/\.jpg//" \
 	| $CAFFEINATE time \
-	parallel --bar -j $JOBS $DRY_ECHO tesseract -l $OCR_LANG {}.jpg {} #> /dev/null 2>&1
+	parallel --bar -j $JOBS $DRY_ECHO tesseract -l $OCR_LANG {}.jpg {} -c debug_file=/dev/null #> /dev/null 2>&1
 
-[ "$1" != "-p" ] && echo "Defaults to dry-run. Supply -p argument for production."
+[ $DRY_ECHO ] && echo "Defaults to dry-run. Supply -p argument for production."
 set +x

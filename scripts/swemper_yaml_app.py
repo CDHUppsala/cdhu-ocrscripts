@@ -1,4 +1,5 @@
 import PySimpleGUI as sg
+import pyperclip
 #import textwrap
 
 basename = ""
@@ -8,7 +9,8 @@ yaml_data = ""
 sg.theme('DarkBlue2')
 try:
     sg.set_options(font=("Menlo", 16))
-    #sg.set_options(font=("Fira Code", 16))
+    #sg.set_options(font=("Source Code Pro ExtraLight Regular", 16))
+    #sg.set_options(font=("Fira Code", 16)) #/Users/mattslindstrom/Downloads/Monoid-HalfTight-Dollar-0/Monoid-Retina-HalfTight-Dollar-0.ttf
     #sg.set_options(font=("Monoid HalfTight Regular", 16))
 except:
     sg.set_options(font=("Courier", 16)); print("No fancy monospaced font. Use Courier as fallback.")
