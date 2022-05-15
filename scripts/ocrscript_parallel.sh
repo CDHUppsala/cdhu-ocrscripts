@@ -28,7 +28,7 @@ echo $CDHU
 
 find . -type f -name "*.jpg" \
 	| sed "s/\.jpg//" \
-	| $CAFFEINATE time -h \
+	| $CAFFEINATE \time -h \
 	parallel --bar -j $JOBS $DRY_ECHO tesseract -l $OCR_LANG {}.jpg {} #> /dev/null 2>&1
 
 [ "$1" != "-p" ] && echo "Defaults to dry-run. Supply -p argument for production."
