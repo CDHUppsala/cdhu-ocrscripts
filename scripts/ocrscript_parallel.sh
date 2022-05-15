@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 # Author: ML/Authorfunction
 # copy this script, edit and run it in the directory where you keep image files that you want to ocr
 # multicore version, requires gnu parallel
