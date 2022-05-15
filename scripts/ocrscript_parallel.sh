@@ -38,7 +38,7 @@ done
 find . -type f -name "*.jpg" \
 	| sed "s/\.jpg//" \
 	| $CAFFEINATE time \
-	parallel --bar -j $JOBS $DRY_ECHO tesseract -l $OCR_LANG {}.jpg {} -c debug_file=/dev/null #> /dev/null 2>&1
+	parallel --bar -j $JOBS $DRY_ECHO tesseract -l $OCR_LANG {}.jpg {} -c debug_file=/dev/null > /dev/null
 
 [ $DRY_ECHO ] && echo "Defaults to dry-run. Supply -p argument for production."
 set +x
