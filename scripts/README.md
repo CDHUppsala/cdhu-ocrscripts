@@ -24,6 +24,9 @@ Script reads Swemper filenames in a directory, extracts publication year (with a
 ### ocrscript.sh
 Script to apply tesseract ocr to pdfs or images in a directory structure (recursively/zsh).
 
+### ocrscript_parallel.sh
+Script parallelizes Tesseract OCR using GNU Parallel.
+
 ## Swemper filename scheme and directory structure
 //TODO convention and example
 

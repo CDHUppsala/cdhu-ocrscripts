@@ -1,7 +1,7 @@
 #!/bin/zsh
-# Author: ML/Authorfunction
-# copy this script, edit and run it in the directory where you keep image files that you want to ocr
-# multi/thread/core version of ocr script, requires gnu parallel
+# Author: ML/@authorfunction/CDHU
+# copy/link this script, edit and run it in the directory where you keep image files that you want to ocr
+# multi/thread/core version of ocr script, requires gnu parallel.
 CDHU="\
  ____ ____ ____ ____ ________ 
 ||C |||D |||H |||U |||       
@@ -23,7 +23,7 @@ export OMP_THREAD_LIMIT=1 #run single thread per job,  https://github.com/tesser
 
 echo $CDHU
 # Check if mac os; if true use caffeinate:
-[[ "$(uname)" == "Darwin" ]] && CAFFEINATE=caffeinate ; echo "On Mac OS, will run with caffeinate to avoid sleep"
+[[ "$(uname)" == "Darwin" ]] && CAFFEINATE=caffeinate && echo "//Mac OS detected, will run with caffeinate to avoid sleep."
 
 while getopts ":pvj:" option; do
 	case $option in
