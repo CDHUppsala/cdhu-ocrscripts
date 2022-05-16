@@ -1,5 +1,5 @@
 import PySimpleGUI as sg
-import pyperclip
+import clipboard
 #import textwrap
 
 basename = ""
