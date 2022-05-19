@@ -2,6 +2,9 @@
 # Author: ML/@authorfunction/CDHU
 # copy/link this script, edit and run it in the directory where you keep image files that you want to ocr
 # multi/thread/core version of ocr script, requires gnu parallel.
+# ---------------------------
+# If dealing with very large amounts of files, take note on this and adjust accordingly: https://stackoverflow.com/questions/47958163/tesseract-ocr-large-number-of-files
+#
 CDHU="\
  ____ ____ ____ ____ ________ 
 ||C |||D |||H |||U |||       

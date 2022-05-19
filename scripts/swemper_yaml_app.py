@@ -1,10 +1,16 @@
 import PySimpleGUI as sg
-import clipboard
+import pyperclip
+import hashlib
 #import textwrap
 
 basename = ""
 yaml_basename = ""
 yaml_data = ""
+DEBUG = False
+
+def log(s):
+    if DEBUG:
+        print(s)
 
 sg.theme('DarkBlue2')
 try:
@@ -64,7 +70,7 @@ string1=""" ____ ____ ____ ____ __________
 ||__|||__|||__|||__|||_________
 |/__\|/__\|/__\|/__\|/_________
 
- SWEMPER TOOL 𝛼 / INSTRUCTIONS:
+ SWEMPER TOOL 𝛼/ver / INSTRUCTIONS:
 """
 info = "...instructions and info......instructions and info......instructions and info......instructions and info......instructions and info......instructions and info..."
 print(info)
@@ -84,7 +90,7 @@ while True:
     event, swemper_data = window.read()
     print(event, swemper_data)
 
-    #These updates need to happen in main event loop. Not sure why.
+    #These updates need to happen in main event loop (not only at Print event). Not sure why.
     basename = swemper_data['SwemperSeriesID']+"_"+swemper_data['YearPublished']
     yaml_basename = basename
     if swemper_data['PeriodicalVolIdx']:
@@ -92,11 +98,15 @@ while True:
     if swemper_data['PeriodicalNrIdx']:
         basename = basename+"_nr"+swemper_data['PeriodicalNrIdx'].zfill(3)
 
+    #calc md5 from filename (with available fields minus extension) and use as unique swemper-vol-id
+    log(basename)
+    md5 = hashlib.md5(basename.encode('utf-8')).hexdigest()
+
     if event in  (None, 'Exit'):
         break
     
     if event == 'Print':
-        # Update the textbox  element
+        # Update the textbox element
         # to be the value of "input" element
         yaml_data = f"""\
 %YAML 1.2
@@ -113,7 +123,7 @@ Swemper-volume-descriptor:
     - *yr
     - *vol
     - *nr
-  Swemper-vol-id: 
+  Swemper-vol-id: {md5}
 ...
 """
     window['textbox'].update(yaml_data)

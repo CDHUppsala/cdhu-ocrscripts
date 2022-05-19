@@ -57,7 +57,7 @@ if __name__ == "__main__":
 
     log(swemper_data)
     log(swemper_file)
-    #calc md5 from filename.pdf and use as unique swemper-vol-id
+    #calc md5 from filename (with available fields minus extension) and use as unique swemper-vol-id
     log(basefilename)
     md5 = hashlib.md5(basefilename.encode('utf-8')).hexdigest()
 
