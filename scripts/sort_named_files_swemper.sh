@@ -9,10 +9,11 @@
 
 # turn on verbose to get feedback:
 #set -x
-FILE_EXT=pdf
+FILE_PATTERN="*.pdf *.jpg *.txt"
 SEPARATOR=_
 
-for i in *.$FILE_EXT
+shopt -s nullglob
+for i in $FILE_PATTERN
 do 
 	INPUT_FILE=$i
 	#edit and set separator
@@ -33,6 +34,7 @@ do
 		echo mv $INPUT_FILE $DESTINATION
 	fi
 done
+shopt -u nullglob
 
 [ "$1" != "-p" ] && echo "Defaults to dry-run. Supply -p argument for production."
 set +x
