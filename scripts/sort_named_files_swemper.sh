@@ -17,8 +17,10 @@ for i in $FILE_PATTERN
 do 
 	INPUT_FILE=$i
 	#edit and set separator
-	#edit awk fields ($1,$2,$3 etc) depending on structure of filename:
-	DESTINATION=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" -v sep="$SEPARATOR" '{print $2"/"$1sep$2sep$3sep$4$5}')
+	#edit awk fields ($1,$2,$3 etc) depending on structure of filename
+	#sed command at the end removes extra separators if fewer fields than standard
+	EXTENSION=${INPUT_FILE=##*.}
+	DESTINATION=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" -v sep="$SEPARATOR" '{print $2"/"$1sep$2sep$3sep$4sep$5}' | sed s/$EXTENSION.*/$EXTENSION/) 
 	SUB_FOLDER=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" '{print $2}')
 
 	if [ "$1" == "-p" ]
