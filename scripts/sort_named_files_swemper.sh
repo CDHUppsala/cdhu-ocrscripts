@@ -18,10 +18,13 @@ do
 	INPUT_FILE=$i
 	#edit and set separator
 	#edit awk fields ($1,$2,$3 etc) depending on structure of filename
-	#sed command at the end removes extra separators if fewer fields than standard
+	#sed command at the end cleans up cases that end up with extra separators if fewer fields than standard:
 	EXTENSION=${INPUT_FILE=##*.}
-	DESTINATION=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" -v sep="$SEPARATOR" '{print $2"/"$1sep$2sep$3sep$4sep$5}' | sed s/$EXTENSION.*/$EXTENSION/) 
-	SUB_FOLDER=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" '{print $2}')
+	DESTINATION=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" -v sep="$SEPARATOR" '{print $2"/"$1sep$2sep$3sep$4sep$5}' | sed "s/$EXTENSION.*/$EXTENSION/") 
+	SUB_FOLDER_STRING=$(echo $INPUT_FILE | awk '{print $0}' | awk -F "${SEPARATOR}" '{print $2}')
+	# This is a hack to fix a edge case where extension sometimes get included in folder name:
+	#SUB_FOLDER=$(echo $SUB_FOLDER | awk -F "\." '{print $1}')
+	SUB_FOLDER=$(echo "${SUB_FOLDER_STRING%.*}")
 
 	if [ "$1" == "-p" ]
 	then
