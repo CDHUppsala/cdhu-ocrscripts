@@ -9,6 +9,7 @@ IMG_FORMAT=jpg #use png, jpg, tiff -- or pdf but see below for that
 OCR_LANG=swe
 
 #note: recursive glob **/* to find pdfs in subdors requires zsh shebang
+#update: should also work in bash after setting "shopt -s globstar"
 for i in **/*.$IMG_FORMAT
 do 
 	#*uncomment* these lines if you want to process single page pdfs:
