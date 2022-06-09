@@ -1,6 +1,6 @@
 #!/bin/bash
 # Author: ML/Authorfunction
-# Extracts text (allready ocr:d) from pdfs.
+# Extracts text (already ocr:d) from pdfs.
 # copy this script, edit and run it in the directory where you keep pdf files with text to extract
 # requires pdftotext (on mac use brew install xpdf to install)
 
