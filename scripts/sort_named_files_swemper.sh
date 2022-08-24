@@ -3,6 +3,7 @@
 # moves files into subfolders (that will be created) based on information in filename 
 # copy this script, edit and run it in the directory where you keep files
 # 
+#
 # Example command output from script:
 # mkdir -p 1990
 # mv Diabetes_1990_vol000_nr006.pdf 1990/Diabetes_1990_vol000_nr006.pdf
