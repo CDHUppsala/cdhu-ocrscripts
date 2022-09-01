@@ -2,6 +2,7 @@
 # Author: ML/authorfunction
 import hashlib
 import sys
+import os
 from datetime import date
 from weakref import finalize
 import pyperclip as clipboard
@@ -36,6 +37,10 @@ def log(s):
     if DEBUG:
         # print('------------------')
         print(s)
+
+
+def get_cwd():
+    print("Current work directory is: "+os.getcwd())
 
 
 def init_layout():
@@ -223,6 +228,8 @@ def main():
     # ADDED finalize=True here -- might cause problems? Needs tesing.
     window = sg.Window('Swemper YAML Tool', layout,
                        size=(WIDTH, HEIGHT), resizable=True, finalize="True")
+
+    get_cwd()
     # TESTING
     # set fields:
     window['Comment'].update(
@@ -262,12 +269,17 @@ def main():
         elif event == '//SETPATH':
             log('//SETPATH')
             path = sg.popup_get_folder('',  no_window=True)
-            log('Path is:'+path)
+            os.chdir(path)
+            #log('Path is:'+path)
+            get_cwd()
         elif event == '//OPEN':
             log('//OPEN')
             file = sg.popup_get_file('',  no_window=True)
             # TODO: REFACTOR THIS CODE AS FUNCTION!
-            read_file(file, window)
+            try:
+                read_file(file, window)
+            except:
+                log('Error opening file!')
         elif event == '//COPY':
             log("//COPY")
             clipboard.copy(swemper_data['thebasename'])
