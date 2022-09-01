@@ -53,6 +53,7 @@ def init_layout():
         # sg.set_options(font=("Fira Code", 16)) #/Users/mattslindstrom/Downloads/Monoid-HalfTight-Dollar-0/Monoid-Retina-HalfTight-Dollar-0.ttf
         #sg.set_options(font=("Monoid HalfTight Regular", 16))
     except:
+        log('Falling back to Courier as font')
         sg.set_options(font=("Courier", 16))
         print("//No fancy monospaced font available. Use Courier as fallback.")
 
@@ -231,32 +232,34 @@ def main():
 
     get_cwd()
     # TESTING
-    # set fields:
+    # set fields using default-yaml:
     window['Comment'].update(
         'Use this field to make notes on the scanning process, anything unusal, significant etc')
-    with open('default.yaml') as f:
-        yaml = YAML()
-        yaml_file_data = yaml.load(f)
-        # parse default.yaml into gui fields
-        # This test works:
-        # print(yaml_file_data['Swemper-volume-descriptor']['Comment'])
-        window['SwemperSeriesID'].update(
-            yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
-        window['FullPeriodicalName'].update(
-            yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
-        window['PeriodicalVolIdx'].update(
-            yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
-        window['PeriodicalNrIdx'].update(
-            yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
-        window['YearPublished'].update(
-            yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
-        window['NumberOfScannedPages'].update(
-            yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
-        window['FinalPrintedPageNumber'].update(
-            yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
-        window['Comment'].update(
-            yaml_file_data['Swemper-volume-descriptor']['Comment'])
-
+    try:
+        with open('default.yaml') as f:
+            yaml = YAML()
+            yaml_file_data = yaml.load(f)
+            # parse default.yaml into gui fields
+            # This test works:
+            # print(yaml_file_data['Swemper-volume-descriptor']['Comment'])
+            window['SwemperSeriesID'].update(
+                yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
+            window['FullPeriodicalName'].update(
+                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
+            window['PeriodicalVolIdx'].update(
+                yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
+            window['PeriodicalNrIdx'].update(
+                yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
+            window['YearPublished'].update(
+                yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
+            window['NumberOfScannedPages'].update(
+                yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
+            window['FinalPrintedPageNumber'].update(
+                yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
+            window['Comment'].update(
+                yaml_file_data['Swemper-volume-descriptor']['Comment'])
+    except:
+        log('No default.yaml was found.')
     # MAIN EVENT LOOP #
     while True:
         event, swemper_data = window.read()
