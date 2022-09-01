@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-# Author: ML/Authorfunction
+# Author: ML/authorfunction
 import hashlib
 import sys
 from datetime import date
+from weakref import finalize
 import pyperclip as clipboard
 import PySimpleGUI as sg
 from ruamel.yaml import YAML
@@ -20,7 +21,7 @@ info_string = """
 ||__|||__|||__|||__|||_____________
 |/__\|/__\|/__\|/__\|/_____________
 
-SWEMPER TOOL 𝛼/ver / INSTRUCTIONS:
+SWEMPER METADATA TOOL 𝛼/ver / HINTS:
 """
 info = '''
 1) Fill in pre-flight fields. Copy filename and paste into scanner-software.
@@ -122,6 +123,8 @@ def init_layout():
             sg.Button('UPDATE YAML', key='//UPDATE',
                       bind_return_key=True, p=((0, 0), (20, 10))),
             sg.Button('COPY F-NAME', key='//COPY', p=((10, 0), (20, 10))),
+            sg.Button('OPEN', key='//OPEN', p=((10, 0), (20, 10))),
+            sg.Button('PATH', key='//SETPATH', p=((10, 0), (20, 10))),
             sg.Button('WRITE YAML', key='//WRITE',
                       disabled=False, p=((10, 0), (20, 10))),
             sg.Button('EXIT', key='EXIT', p=((10, 0), (20, 10))),
@@ -160,16 +163,92 @@ def init_layout():
     return layout
 
 
+def read_file(file, window):
+    with open(file) as f:
+        yaml = YAML()
+        yaml_file_data = yaml.load(f)
+        # parse and load fields into gui fields
+        try:
+            window['SwemperSeriesID'].update(
+                yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['FullPeriodicalName'].update(
+                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['PeriodicalVolIdx'].update(
+                yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['PeriodicalNrIdx'].update(
+                yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['YearPublished'].update(
+                yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['NumberOfScannedPages'].update(
+                yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['FinalPrintedPageNumber'].update(
+                yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['DateOfScan'].update(
+                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
+        except:
+            log('Exception, field empty')
+        try:
+            window['Comment'].update(
+                yaml_file_data['Swemper-volume-descriptor']['Comment'])
+        except:
+            log('Exception, field empty')
+        log('File: '+file)
+
+
 def main():
     # Initialize and create GUI
     layout = init_layout()
 
-    # yaml = YAML()
-    # with open('default.yaml') as f:
-    #     swemper_data = yaml.load(f)
-
+    # ADDED finalize=True here -- might cause problems? Needs tesing.
     window = sg.Window('Swemper YAML Tool', layout,
-                       size=(WIDTH, HEIGHT), resizable=True)
+                       size=(WIDTH, HEIGHT), resizable=True, finalize="True")
+    # TESTING
+    # set fields:
+    window['Comment'].update(
+        'Use this field to make notes on the scanning process, anything unusal, significant etc')
+    with open('default.yaml') as f:
+        yaml = YAML()
+        yaml_file_data = yaml.load(f)
+        # parse default.yaml into gui fields
+        # This test works:
+        # print(yaml_file_data['Swemper-volume-descriptor']['Comment'])
+        window['SwemperSeriesID'].update(
+            yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
+        window['FullPeriodicalName'].update(
+            yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
+        window['PeriodicalVolIdx'].update(
+            yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
+        window['PeriodicalNrIdx'].update(
+            yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
+        window['YearPublished'].update(
+            yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
+        window['NumberOfScannedPages'].update(
+            yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
+        window['FinalPrintedPageNumber'].update(
+            yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
+        window['Comment'].update(
+            yaml_file_data['Swemper-volume-descriptor']['Comment'])
 
     # MAIN EVENT LOOP #
     while True:
@@ -180,6 +259,15 @@ def main():
         # if event in (None, 'EXIT'):
         if event == "EXIT" or event == sg.WIN_CLOSED:
             break
+        elif event == '//SETPATH':
+            log('//SETPATH')
+            path = sg.popup_get_folder('',  no_window=True)
+            log('Path is:'+path)
+        elif event == '//OPEN':
+            log('//OPEN')
+            file = sg.popup_get_file('',  no_window=True)
+            # TODO: REFACTOR THIS CODE AS FUNCTION!
+            read_file(file, window)
         elif event == '//COPY':
             log("//COPY")
             clipboard.copy(swemper_data['thebasename'])
@@ -187,7 +275,8 @@ def main():
             print(f'\n++ Copied {l} chars to clipboard')
         elif event == '//WRITE':
             log("//WRITE")
-            OUTPUT_FILE = yaml_basename+'.yaml'
+            # CHANGE: Changed to basename variable from basename_yaml to get full names for yaml, files as this should make sense: One yml-file for each physical scanned volume.
+            OUTPUT_FILE = basename+'.yaml'
             try:
                 with open(OUTPUT_FILE, 'w') as fp:
                     fp.write(yaml_data)
@@ -221,11 +310,11 @@ def main():
             yaml_data = f"""\
 %YAML 1.2
 ---
-Swemper-yaml-filename: {yaml_basename}.yaml
+Swemper-yaml-filename: {basename}.yaml
 Swemper-volume-descriptor:
     # PRE-FLIGHT
     SwemperSeriesID: &ssid {sd['SwemperSeriesID']}
-    FullPeriodicalName: !!str {sd['FullPeriodicalName']}
+    FullPeriodicalName: !!str "{sd['FullPeriodicalName']}"
     PeriodicalVolIdx: &vol !!str {sd['PeriodicalVolIdx']}
     PeriodicalNrIdx: &nr !!str {sd['PeriodicalNrIdx']}
     YearPublished: &yr {sd['YearPublished']}
