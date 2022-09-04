@@ -35,12 +35,11 @@ swemper_data = {}
 
 def log(s):
     if DEBUG:
-        # print('------------------')
         print(s)
 
 
 def get_cwd():
-    print("Current work directory is: "+os.getcwd())
+    print("++ Current work directory is: "+os.getcwd())
 
 
 def init_layout():
@@ -53,7 +52,7 @@ def init_layout():
         # sg.set_options(font=("Fira Code", 16)) #/Users/mattslindstrom/Downloads/Monoid-HalfTight-Dollar-0/Monoid-Retina-HalfTight-Dollar-0.ttf
         #sg.set_options(font=("Monoid HalfTight Regular", 16))
     except:
-        log('Falling back to Courier as font')
+        log('-- Falling back to Courier')
         sg.set_options(font=("Courier", 16))
         print("//No fancy monospaced font available. Use Courier as fallback.")
 
@@ -88,23 +87,25 @@ def init_layout():
     tab1 = [
 
         [  # row 0
-            sg.Text("NumberOfScannedPages"),
+            sg.Text("NumberOfScannedPages:"),
             sg.Input(key='NumberOfScannedPages',
                      default_text="", expand_x=True)
         ],  # row 1
         [
-            sg.Text("FinalPrintedPageNumber"),
+            sg.Text("FinalPrintedPageNumber:"),
             sg.Input(key='FinalPrintedPageNumber',
                      default_text="", expand_x=True)
         ],
         [
-            sg.Text("DateOfScan"),
+            sg.Text("DateOfScan:"),
             sg.Input(key='DateOfScan',
                      default_text=date.today().isoformat(), expand_x=True)
         ],
         [
-            sg.Text("Comment"),
+            sg.Text("Comment:"),
             sg.Input(key='Comment', expand_x=True)
+            # Use this instead for multiline field:
+            #sg.Multiline(size=(2, 3), expand_y=True, key='Comment', expand_x=True, p=((0, 0), (0, 0)), no_scrollbar=True)
         ],
         [
             sg.Text("//WhateverIsUseful:"),
@@ -178,88 +179,65 @@ def read_file(file, window):
             window['SwemperSeriesID'].update(
                 yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
         except:
-            log('Exception, field empty')
+            log('-- SwemperSeriesID: no field')
         try:
             window['FullPeriodicalName'].update(
                 yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
         except:
-            log('Exception, field empty')
+            log('-- FullPeriodicalName: no field')
         try:
             window['PeriodicalVolIdx'].update(
                 yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
         except:
-            log('Exception, field empty')
+            log('-- PeriodicalVolIdx: no field')
         try:
             window['PeriodicalNrIdx'].update(
                 yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
         except:
-            log('Exception, field empty')
+            log('-- PeriodicalNrIdx: no field')
         try:
             window['YearPublished'].update(
                 yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
         except:
-            log('Exception, field empty')
+            log('-- YearPublished: no field')
         try:
             window['NumberOfScannedPages'].update(
                 yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
         except:
-            log('Exception, field empty')
+            log('-- NumberOfScannedPages: no field')
         try:
             window['FinalPrintedPageNumber'].update(
                 yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
         except:
-            log('Exception, field empty')
+            log('-- FinalPrintedPageNumber: no field')
         try:
             window['DateOfScan'].update(
-                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
+                yaml_file_data['Swemper-volume-descriptor']['DateOfScan'])
         except:
-            log('Exception, field empty')
+            log('-- DateOfScan: no field')
         try:
             window['Comment'].update(
                 yaml_file_data['Swemper-volume-descriptor']['Comment'])
         except:
-            log('Exception, field empty')
-        log('File: '+file)
+            log('-- Comment: no field')
+        log('++ Done reading '+file)
 
 
 def main():
     # Initialize and create GUI
     layout = init_layout()
 
-    # ADDED finalize=True here -- might cause problems? Needs tesing.
+    # ADDED finalize=True here to remove error message -- might cause problems? Needs tesing.
     window = sg.Window('Swemper YAML Tool', layout,
                        size=(WIDTH, HEIGHT), resizable=True, finalize="True")
-
     get_cwd()
-    # TESTING
-    # set fields using default-yaml:
-    window['Comment'].update(
-        'Use this field to make notes on the scanning process, anything unusal, significant etc')
+    # Look for defaults-file and load
     try:
-        with open('default.yaml') as f:
-            yaml = YAML()
-            yaml_file_data = yaml.load(f)
-            # parse default.yaml into gui fields
-            # This test works:
-            # print(yaml_file_data['Swemper-volume-descriptor']['Comment'])
-            window['SwemperSeriesID'].update(
-                yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
-            window['FullPeriodicalName'].update(
-                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
-            window['PeriodicalVolIdx'].update(
-                yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
-            window['PeriodicalNrIdx'].update(
-                yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
-            window['YearPublished'].update(
-                yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
-            window['NumberOfScannedPages'].update(
-                yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
-            window['FinalPrintedPageNumber'].update(
-                yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
-            window['Comment'].update(
-                yaml_file_data['Swemper-volume-descriptor']['Comment'])
+        log('++ Reading default.yaml...')
+        read_file('default.yaml', window)
     except:
-        log('No default.yaml was found.')
+        log('-- Failed reading default.yaml')
+
     # MAIN EVENT LOOP #
     while True:
         event, swemper_data = window.read()
@@ -271,14 +249,16 @@ def main():
             break
         elif event == '//SETPATH':
             log('//SETPATH')
-            path = sg.popup_get_folder('',  no_window=True)
-            os.chdir(path)
-            #log('Path is:'+path)
+            try:
+                path = sg.popup_get_folder('',  no_window=True)
+                os.chdir(path)
+                #log('Path is:'+path)
+            except:
+                log("-- No new path was set.")
             get_cwd()
         elif event == '//OPEN':
             log('//OPEN')
             file = sg.popup_get_file('',  no_window=True)
-            # TODO: REFACTOR THIS CODE AS FUNCTION!
             try:
                 read_file(file, window)
             except:
@@ -343,7 +323,7 @@ Swemper-volume-descriptor:
     NumberOfScannedPages: {sd['NumberOfScannedPages']}
     FinalPrintedPageNumber: {sd['FinalPrintedPageNumber']}
     DateOfScan: {sd['DateOfScan']}
-    Comment: {sd['Comment']}
+    Comment: "{sd['Comment']}"
 ...
 """
             window['textbox'].update(yaml_data)
