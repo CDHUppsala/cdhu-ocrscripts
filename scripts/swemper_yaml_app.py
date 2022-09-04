@@ -254,7 +254,7 @@ def main():
                 os.chdir(path)
                 #log('Path is:'+path)
             except:
-                log("-- No new path was set.")
+                log("-- No new path was set")
             get_cwd()
         elif event == '//OPEN':
             log('//OPEN')
