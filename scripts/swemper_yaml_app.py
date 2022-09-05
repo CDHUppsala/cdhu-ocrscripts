@@ -54,19 +54,19 @@ def init_layout():
     except:
         log('-- Falling back to Courier')
         sg.set_options(font=("Courier", 16))
-        print("//No fancy monospaced font available. Use Courier as fallback.")
+        #print("//No fancy monospaced font available. Use Courier as fallback.")
 
     tab0 = [
 
         [  # row 0
             sg.Text("SwemperSeriesID:"),
             sg.Input(key='SwemperSeriesID',
-                     default_text="Status", expand_x=True)
+                     default_text="--Status", expand_x=True)
         ],  # row 1
         [
             sg.Text("FullPeriodicalName:"),
             sg.Input(key='FullPeriodicalName',
-                     default_text="Status", expand_x=True)
+                     default_text="--Status: status", expand_x=True)
         ],
         [
             sg.Text("PeriodicalVolIdx:"),
@@ -79,7 +79,7 @@ def init_layout():
         [   # ...final row
             sg.Text("YearPublished:"),
             sg.Input(key='YearPublished',
-                     default_text="1958", expand_x=True)
+                     default_text="1111", expand_x=True)
         ],
 
     ]
@@ -170,56 +170,19 @@ def init_layout():
     return layout
 
 
-def read_file(file, window):
+def read_yaml_file(file, window):
     with open(file) as f:
         yaml = YAML()
         yaml_file_data = yaml.load(f)
-        # parse and load fields into gui fields
-        try:
-            window['SwemperSeriesID'].update(
-                yaml_file_data['Swemper-volume-descriptor']['SwemperSeriesID'])
-        except:
-            log('-- SwemperSeriesID: no field')
-        try:
-            window['FullPeriodicalName'].update(
-                yaml_file_data['Swemper-volume-descriptor']['FullPeriodicalName'])
-        except:
-            log('-- FullPeriodicalName: no field')
-        try:
-            window['PeriodicalVolIdx'].update(
-                yaml_file_data['Swemper-volume-descriptor']['PeriodicalVolIdx'])
-        except:
-            log('-- PeriodicalVolIdx: no field')
-        try:
-            window['PeriodicalNrIdx'].update(
-                yaml_file_data['Swemper-volume-descriptor']['PeriodicalNrIdx'])
-        except:
-            log('-- PeriodicalNrIdx: no field')
-        try:
-            window['YearPublished'].update(
-                yaml_file_data['Swemper-volume-descriptor']['YearPublished'])
-        except:
-            log('-- YearPublished: no field')
-        try:
-            window['NumberOfScannedPages'].update(
-                yaml_file_data['Swemper-volume-descriptor']['NumberOfScannedPages'])
-        except:
-            log('-- NumberOfScannedPages: no field')
-        try:
-            window['FinalPrintedPageNumber'].update(
-                yaml_file_data['Swemper-volume-descriptor']['FinalPrintedPageNumber'])
-        except:
-            log('-- FinalPrintedPageNumber: no field')
-        try:
-            window['DateOfScan'].update(
-                yaml_file_data['Swemper-volume-descriptor']['DateOfScan'])
-        except:
-            log('-- DateOfScan: no field')
-        try:
-            window['Comment'].update(
-                yaml_file_data['Swemper-volume-descriptor']['Comment'])
-        except:
-            log('-- Comment: no field')
+        fields = ['SwemperSeriesID', 'FullPeriodicalName', 'PeriodicalVolIdx', 'PeriodicalNrIdx', 'YearPublished',
+                  'NumberOfScannedPages', 'FinalPrintedPageNumber', 'DateOfScan', 'Comment']
+        for field in fields:
+            try:
+                window[field].update(
+                    yaml_file_data['Swemper-volume-descriptor'][field])
+            except:
+                log('No data/field: '+field)
+
         log('++ Done reading '+file)
 
 
@@ -234,7 +197,7 @@ def main():
     # Look for defaults-file and load
     try:
         log('++ Reading default.yaml...')
-        read_file('default.yaml', window)
+        read_yaml_file('default.yaml', window)
     except:
         log('-- Failed reading default.yaml')
 
@@ -260,7 +223,7 @@ def main():
             log('//OPEN')
             file = sg.popup_get_file('',  no_window=True)
             try:
-                read_file(file, window)
+                read_yaml_file(file, window)
             except:
                 log('Error opening file!')
         elif event == '//COPY':
@@ -285,6 +248,10 @@ def main():
             log('//UPDATE')
             # Update the textbox element
             # to be the value of "input" element
+            # Caclulate base filename etc
+            # NB! Pressing enter in any field calls this code as well -- reason: bind_return_key=True is set for this button above
+            # TODO: There's room for improvement here with error checking etc
+            # Also, currently there might be inconstistencies/bugs in how this works visavi bind_return_key...
             basename = swemper_data['SwemperSeriesID'] + \
                 "_"+swemper_data['YearPublished']
             yaml_basename = basename
