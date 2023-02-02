@@ -16,11 +16,23 @@ HEIGHT = 800
 basename = ""
 yaml_basename = ""
 yaml_data = ""
-info_string = """ 
+info_string = """
  ____ ____ ____ ____ ______________
-||C |||D |||H |||U |||       
+||C |||D |||H |||U |||
 ||__|||__|||__|||__|||_____________
-|/__\|/__\|/__\|/__\|/_____________
+|/__\\|/__\\|/__\\|/__\\|/_____________
+
+SWEMPER METADATA TOOL 𝛼/ver / HINTS:
+"""
+new_info_string = """
+___________________________________
+
+Centre for                 :: ::
+                        :: :: :: ::
+Digital Humanities         :: :: ::
+                        :: :: ::
+Uppsala / CDHU
+_______________________ .. .. .. ..
 
 SWEMPER METADATA TOOL 𝛼/ver / HINTS:
 """
@@ -29,6 +41,18 @@ info = '''
 2) Operate the scanner.
 3) Fill in post-flight fields.
 '''
+
+NOPE_new_info_string = """
+___________________________________
+
+  ⣿⣿⣿⣿    Centre for
+⣿⣿⣿⣿⣿⣿⣿⣿  Digital Humanities
+  ⣿⣿⣿⣿⣿⣿  Uppsala
+⣿⣿⣿⣿⣿⣿    CDHU
+_______________________ .. .. .. ..
+
+SWEMPER METADATA TOOL 𝛼/ver / HINTS:
+"""
 
 swemper_data = {}
 
@@ -39,22 +63,22 @@ def log(s):
 
 
 def get_cwd():
-    print("++ Current work directory is: "+os.getcwd())
+    print("++ Current work directory is: " + os.getcwd())
 
 
 def init_layout():
     sg.theme('DarkBlue2')
     try:
         sg.set_options(font=("Menlo", 16))
-        #sg.set_options(font=("UbuntuMono Nerd Font", 17))
-        #sg.set_options(font=("Inconsolata", 17))
-        #sg.set_options(font=("Source Code Pro ExtraLight Regular", 16))
+        # sg.set_options(font=("UbuntuMono Nerd Font", 17))
+        # sg.set_options(font=("Inconsolata", 17))
+        # sg.set_options(font=("Source Code Pro ExtraLight Regular", 16))
         # sg.set_options(font=("Fira Code", 16)) #/Users/mattslindstrom/Downloads/Monoid-HalfTight-Dollar-0/Monoid-Retina-HalfTight-Dollar-0.ttf
-        #sg.set_options(font=("Monoid HalfTight Regular", 16))
-    except:
+        # sg.set_options(font=("Monoid HalfTight Regular", 16))
+    except BaseException:
         log('-- Falling back to Courier')
         sg.set_options(font=("Courier", 16))
-        #print("//No fancy monospaced font available. Use Courier as fallback.")
+        # print("//No fancy monospaced font available. Use Courier as fallback.")
 
     tab0 = [
 
@@ -103,9 +127,12 @@ def init_layout():
         ],
         [
             sg.Text("Comment:"),
-            sg.Input(key='Comment', expand_x=True)
+            # sg.Input(key='Comment', expand_x=True)
             # Use this instead for multiline field:
-            #sg.Multiline(size=(2, 3), expand_y=True, key='Comment', expand_x=True, p=((0, 0), (0, 0)), no_scrollbar=True)
+            sg.Multiline(
+                size=(
+                    2, 4), expand_y=True, key='Comment', expand_x=True, p=(
+                    (0, 5), (0, 0)))  # , no_scrollbar=True)
         ],
         [
             sg.Text("//WhateverIsUseful:"),
@@ -150,7 +177,7 @@ def init_layout():
     # ]
 
     col1 = [
-        [sg.Text(info_string, p=0)],  # Row 0
+        [sg.Text(new_info_string, p=0)],  # Row 0
         [sg.Text(info, p=0, size=(38, 20))],  # Row 1
         [sg.Multiline('-- stdout --\n', p=10, size=(38, 20),
                       reroute_stdout=True, autoscroll=True)],  # Row 2
@@ -159,7 +186,7 @@ def init_layout():
 
     layout = [
         [
-            sg.Column(col0, size=(WIDTH/2+(WIDTH/12), HEIGHT),
+            sg.Column(col0, size=(WIDTH / 2 + (WIDTH / 12), HEIGHT),
                       expand_x=True, expand_y=True, pad=(15, 10)),  # left col
 
 
@@ -174,23 +201,32 @@ def read_yaml_file(file, window):
     with open(file) as f:
         yaml = YAML()
         yaml_file_data = yaml.load(f)
-        fields = ['SwemperSeriesID', 'FullPeriodicalName', 'PeriodicalVolIdx', 'PeriodicalNrIdx', 'YearPublished',
-                  'NumberOfScannedPages', 'FinalPrintedPageNumber', 'DateOfScan', 'Comment']
+        fields = [
+            'SwemperSeriesID',
+            'FullPeriodicalName',
+            'PeriodicalVolIdx',
+            'PeriodicalNrIdx',
+            'YearPublished',
+            'NumberOfScannedPages',
+            'FinalPrintedPageNumber',
+            'DateOfScan',
+            'Comment']
         for field in fields:
             try:
                 window[field].update(
                     yaml_file_data['Swemper-volume-descriptor'][field])
-            except:
-                log('No data/field: '+field)
+            except BaseException:
+                log('No data/field: ' + field)
 
-        log('++ Done reading '+file)
+        log('++ Done reading ' + file)
 
 
 def main():
     # Initialize and create GUI
     layout = init_layout()
 
-    # ADDED finalize=True here to remove error message -- might cause problems? Needs tesing.
+    # ADDED finalize=True here to remove error message -- might cause
+    # problems? Needs tesing.
     window = sg.Window('Swemper YAML Tool', layout,
                        size=(WIDTH, HEIGHT), resizable=True, finalize="True")
     get_cwd()
@@ -198,14 +234,14 @@ def main():
     try:
         log('++ Reading default.yaml...')
         read_yaml_file('default.yaml', window)
-    except:
+    except BaseException:
         log('-- Failed reading default.yaml')
 
     # MAIN EVENT LOOP #
     while True:
         event, swemper_data = window.read()
         # debug info:
-        #print(event, swemper_data)
+        # print(event, swemper_data)
 
         # if event in (None, 'EXIT'):
         if event == "EXIT" or event == sg.WIN_CLOSED:
@@ -213,28 +249,32 @@ def main():
         elif event == '//SETPATH':
             log('//SETPATH')
             try:
-                path = sg.popup_get_folder('',  no_window=True)
+                path = sg.popup_get_folder('', no_window=True)
                 os.chdir(path)
-                #log('Path is:'+path)
-            except:
+                # log('Path is:'+path)
+            except BaseException:
                 log("-- No new path was set")
             get_cwd()
         elif event == '//OPEN':
             log('//OPEN')
-            file = sg.popup_get_file('',  no_window=True)
+            file = sg.popup_get_file('', no_window=True)
             try:
                 read_yaml_file(file, window)
-            except:
+            except BaseException:
                 log('Error opening file!')
         elif event == '//COPY':
             log("//COPY")
+            # TODO: PySimpleGUI actually has it's own clipboard function, so
+            # might switched to that and remove a dependency.
             clipboard.copy(swemper_data['thebasename'])
             l = len(swemper_data['thebasename'])
             print(f'\n++ Copied {l} chars to clipboard')
         elif event == '//WRITE':
             log("//WRITE")
-            # CHANGE: Changed to basename variable from basename_yaml to get full names for yaml, files as this should make sense: One yml-file for each physical scanned volume.
-            OUTPUT_FILE = basename+'.yaml'
+            # CHANGE: Changed to basename variable from basename_yaml to get
+            # full names for yaml, files as this should make sense: One
+            # yml-file for each physical scanned volume.
+            OUTPUT_FILE = basename + '.yaml'
             try:
                 with open(OUTPUT_FILE, 'w') as fp:
                     fp.write(yaml_data)
@@ -251,15 +291,16 @@ def main():
             # Caclulate base filename etc
             # NB! Pressing enter in any field calls this code as well -- reason: bind_return_key=True is set for this button above
             # TODO: There's room for improvement here with error checking etc
-            # Also, currently there might be inconstistencies/bugs in how this works visavi bind_return_key...
+            # Also, currently there might be inconstistencies/bugs in how this
+            # works visavi bind_return_key...
             basename = swemper_data['SwemperSeriesID'] + \
-                "_"+swemper_data['YearPublished']
+                "_" + swemper_data['YearPublished']
             yaml_basename = basename
             if swemper_data['PeriodicalVolIdx']:
-                basename = basename+"_vol" + \
+                basename = basename + "_vol" + \
                     swemper_data['PeriodicalVolIdx'].zfill(3)
             if swemper_data['PeriodicalNrIdx']:
-                basename = basename+"_nr" + \
+                basename = basename + "_nr" + \
                     swemper_data['PeriodicalNrIdx'].zfill(3)
 
             # calc md5 from filename (with available fields minus extension) and use as unique swemper-vol-id
@@ -280,7 +321,7 @@ Swemper-volume-descriptor:
     PeriodicalVolIdx: &vol !!str {sd['PeriodicalVolIdx']}
     PeriodicalNrIdx: &nr !!str {sd['PeriodicalNrIdx']}
     YearPublished: &yr {sd['YearPublished']}
-    BaseFilename: 
+    BaseFilename:
         - *ssid
         - *yr
         - *vol
@@ -294,7 +335,7 @@ Swemper-volume-descriptor:
 ...
 """
             window['textbox'].update(yaml_data)
-            window['thebasename'].update(basename+"_")
+            window['thebasename'].update(basename + "_")
 
     # Outside event loop, EXIT #
     window.close()
