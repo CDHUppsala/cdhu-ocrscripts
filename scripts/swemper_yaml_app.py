@@ -115,6 +115,11 @@ def init_layout():
             sg.Input(key='NumberOfScannedPages',
                      default_text="", expand_x=True)
         ],  # row 1
+        [  # row 0
+            sg.Text("FirstPrintedPageNumber:"),
+            sg.Input(key='FirstPrintedPageNumber',
+                     default_text="", expand_x=True)
+        ],  # row 1
         [
             sg.Text("FinalPrintedPageNumber:"),
             sg.Input(key='FinalPrintedPageNumber',
@@ -208,6 +213,7 @@ def read_yaml_file(file, window):
             'PeriodicalNrIdx',
             'YearPublished',
             'NumberOfScannedPages',
+            'FirstPrintedPageNumber',
             'FinalPrintedPageNumber',
             'DateOfScan',
             'Comment']
@@ -329,6 +335,7 @@ Swemper-volume-descriptor:
     Swemper-vol-id: {md5}
     # POST-FLIGHT:
     NumberOfScannedPages: {sd['NumberOfScannedPages']}
+    FirstPrintedPageNumber: {sd['FirstPrintedPageNumber']}
     FinalPrintedPageNumber: {sd['FinalPrintedPageNumber']}
     DateOfScan: {sd['DateOfScan']}
     Comment: "{sd['Comment']}"
