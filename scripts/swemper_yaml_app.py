@@ -84,7 +84,7 @@ def get_cwd():
 def init_layout():
     sg.theme('DarkBlue2')
     try:
-        sg.set_options(font=("IBM Plex Mono", 14))
+        sg.set_options(font=("IBM Plex Mono", 12))
         # sg.set_options(font=("Menlo", 14))
         # sg.set_options(font=("UbuntuMono Nerd Font", 17))
         # sg.set_options(font=("Inconsolata", 17))
