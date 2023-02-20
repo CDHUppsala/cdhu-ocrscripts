@@ -47,12 +47,12 @@ info = '''1) Fill in pre-flight fields. Copy filename and paste into scanner-sof
 '''
 
 left_info_string = """
-_______________________
+_____________________
 
 Centre for
 Digital Humanities
 Uppsala / CDHU
-_______________________"""
+_____________________"""
 
 new_info_string = """
 SWEMPER METADATA TOOL 𝛼/ver / HINTS:
@@ -311,7 +311,11 @@ def update_yaml(window, swemper_data):
     basename = swemper_data['SwemperSeriesID'] + \
         "_" + swemper_data['YearPublished']
     # Use this for lowercase basenames:
-    # basename = basename.lower()
+    basename = basename.lower()
+    basename = basename.replace("å", "a")
+    basename = basename.replace("ä", "a")
+    basename = basename.replace("ö", "o")
+
     yaml_basename = basename
     if swemper_data['PeriodicalVolIdx']:
         basename = basename + "_vol" + \
@@ -402,8 +406,10 @@ def main():
             file = sg.popup_get_file('', no_window=True)
             try:
                 read_yaml_file(file, window)
+                log('++ Succesfully parsed file', level='ok')
+                get_cwd()
             except BaseException:
-                log('Error opening file!', level='error')
+                log('-- Error opening file!', level='error')
         elif event == '//COPY':
             log("//COPY", level='debug')
             # TODO: PySimpleGUI actually has it's own clipboard function, so
@@ -425,7 +431,7 @@ def main():
             log('Filename: ' + OUTPUT_FILE)
             log('Data out:\n' + yaml_data)
             try:
-                with open(OUTPUT_FILE, 'w') as fp:
+                with open(OUTPUT_FILE, 'w', encoding='utf-8') as fp:
                     fp.write(yaml_data)
             except Exception as e:
                 log(f"-- Error: {e}", level='error')
